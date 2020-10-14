@@ -1,0 +1,38 @@
+# .semaphore/semaphore.yml
+version: v1.0
+name: bombardier
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: Tests
+    task:
+      prologue:
+        commands:
+          - export "SEMAPHORE_GIT_DIR=$(go env GOPATH)/src/github.com/${SEMAPHORE_PROJECT_NAME}"
+          - export "PATH=$(go env GOPATH)/bin:${PATH}"
+          - mkdir -vp "${SEMAPHORE_GIT_DIR}" "$(go env GOPATH)/bin"
+      jobs:
+        - name: Go 1.10
+          commands:
+            - checkout
+            - sem-version go 1.10
+            - go get -t -d -v ./...
+            - go build -v ./...
+            - go test -v ./...
+        - name: Go 1.14
+          commands:
+            - checkout
+            - sem-version go 1.14
+            - go get -t -d -v ./...
+            - go build -v ./...
+            - go test -v ./...
+        - name: Go 1.15
+          commands:
+            - checkout
+            - sem-version go 1.15
+            - go get -t -d -v ./...
+            - go build -v ./...
+            - go test -v ./...
